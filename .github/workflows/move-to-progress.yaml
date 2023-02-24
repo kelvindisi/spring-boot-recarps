@@ -1,0 +1,25 @@
+name: Move issue to In Progress
+
+on:
+  push:
+    branches:
+      - main
+      - dev*
+
+jobs:
+  move-to-in-progress:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract issue number from commit message
+        run: |
+          ISSUE_NUMBER=$(echo $GITHUB_REF | sed -n 's#refs/heads/.*issue-\(\d*\)$#\1#p')
+          echo "Issue number is $ISSUE_NUMBER"
+        env:
+          GITHUB_REF: ${{ github.ref }}
+      - name: Update issue status to In Progress
+        uses: peter-evans/update-issue@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          issue-number: $ISSUE_NUMBER
+          state: in_progress
