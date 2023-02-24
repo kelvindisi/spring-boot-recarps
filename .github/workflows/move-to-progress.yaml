@@ -1,25 +1,14 @@
-name: Move issue to In Progress
-
+name: Move assigned card
 on:
-  push:
-    branches:
-      - main
-      - dev*
-
+  issues:
+    types:
+      - assigned
 jobs:
-  move-to-in-progress:
+  move-assigned-card:
     runs-on: ubuntu-latest
     steps:
-      - name: Extract issue number from commit message
-        run: |
-          ISSUE_NUMBER=$(echo $GITHUB_REF | sed -n 's#refs/heads/.*issue-\(\d*\)$#\1#p')
-          echo "Issue number is $ISSUE_NUMBER"
-        env:
-          GITHUB_REF: ${{ github.ref }}
-      - name: Update issue status to In Progress
-        uses: peter-evans/update-issue@v1
+      - uses: alex-page/github-project-automation-plus@5bcba1c1c091a222584d10913e5c060d32c44044
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }}
-          issue-number: $ISSUE_NUMBER
-          state: in_progress
+          project: Docs Work
+          column: In Progress
+          repo-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
